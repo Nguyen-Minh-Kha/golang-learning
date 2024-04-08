@@ -17,9 +17,8 @@ func compareHashes(hash1, hash2 []byte) bool {
 	return true
 }
 
-func main() {
+func getFilesHashes() [][]byte {
 	var tableHash [][]byte
-	var index int
 	for i:= 1; i < 4; i++ {
 		content, err := os.ReadFile("./image_" + strconv.Itoa(i) +".jpg")
 		h := sha256.New()
@@ -29,10 +28,22 @@ func main() {
 		h.Write([]byte(content))
 		tableHash = append(tableHash, h.Sum(nil))
 	}
+	return tableHash
+}
+
+func getUniqueImage(tableHash [][]byte) int {
+	var index int
 	for i := len(tableHash)-1; i > 1 ; i-- {
 		if !compareHashes(tableHash[i], tableHash[i-1]) {
 			index = i
 		}
 	}
+	return index
+} 
+
+func main() {
+	
+	index := getUniqueImage(getFilesHashes())
+	
 	fmt.Printf("image %v est unique", index)
 }
