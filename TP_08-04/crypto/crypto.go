@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"fmt"
 	"log"
 	"crypto/sha256"
@@ -21,7 +21,7 @@ func main() {
 	var tableHash [][]byte
 	var index int
 	for i:= 1; i < 4; i++ {
-		content, err := ioutil.ReadFile("./image_" + strconv.Itoa(i) +".jpg")
+		content, err := os.ReadFile("./image_" + strconv.Itoa(i) +".jpg")
 		h := sha256.New()
 		if err!= nil {
 			log.Fatal(err)
