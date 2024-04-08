@@ -1,11 +1,12 @@
 package main
 
 import (
-	"os"
+	"crypto/sha256"
+	"flag"
 	"fmt"
 	"log"
-	"crypto/sha256"
-	"strconv"
+	"os"
+	"strings"
 )
 
 func compareHashes(hash1, hash2 []byte) bool {
@@ -17,10 +18,11 @@ func compareHashes(hash1, hash2 []byte) bool {
 	return true
 }
 
-func getFilesHashes() [][]byte {
+func getFilesHashes(imagesFlags []string) [][]byte {
 	var tableHash [][]byte
-	for i:= 1; i < 4; i++ {
-		content, err := os.ReadFile("./image_" + strconv.Itoa(i) +".jpg")
+	for i:= 0; i < len(imagesFlags); i++ {
+		fmt.Println(imagesFlags[i])
+		content, err := os.ReadFile("./" + imagesFlags[i] +".jpg")
 		h := sha256.New()
 		if err!= nil {
 			log.Fatal(err)
@@ -42,8 +44,14 @@ func getUniqueImage(tableHash [][]byte) int {
 } 
 
 func main() {
+
+	imagesFlag := flag.String("images", "", "list of images we want to compare (separated by commas)")
+
+	flag.Parse()
+
+	imagesFlagArray := strings.Split(*imagesFlag, ",")
 	
-	index := getUniqueImage(getFilesHashes())
+	index := getUniqueImage(getFilesHashes(imagesFlagArray))
 	
 	fmt.Printf("image %v est unique", index)
 }
