@@ -11,6 +11,7 @@ type User struct {
 	Password string
 }
 
+// Serialize the user to JSON
 func ex1 () {	
 	user := User{Login: "Paul", Password: "pass123"}
 	b, err := json.Marshal(user)
@@ -20,6 +21,7 @@ func ex1 () {
 	fmt.Println(string(b))
 }
 
+// Deserialize the user from JSON
 func ex2 () {
 	content, err := os.ReadFile("./users.json")
 	if err!= nil {

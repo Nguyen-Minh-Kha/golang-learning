@@ -4,6 +4,7 @@ import (
     "fmt"
 )
 
+// Empty interface can be anything
 type emptyInterface interface {}
 
 func PrintIt (input interface{}) {
