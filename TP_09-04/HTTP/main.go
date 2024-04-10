@@ -38,27 +38,45 @@ func populateUsers() map[string]User {
 	return mapUsers
 }
 
-// Function to serve the HTTP server
-func serve() {
+func sendResponse(id string, w http.ResponseWriter) {
+	if user, ok := USERS[id]; ok {
+		response, err := json.Marshal(user)
+		if err != nil {
+			fmt.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		w.Header().Set(
+			"Content-Type",
+			"application/json; charset=utf-8",
+		)
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	} else {
+		w.WriteHeader((http.StatusNotFound))
+	}
+}
+
+// Using Handle method
+func (u *User) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	
+	id := r.FormValue("id")
+	sendResponse(id, w)
+}
+
+// Using handleFunc method
+func handleFuncMethod () {
 	defaultHandler := func(w http.ResponseWriter, r *http.Request) {
 		id := r.FormValue("id")
-		if user, ok := USERS[id]; ok {
-			response, err := json.Marshal(user)
-			if err != nil {
-				fmt.Println(err)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
-			w.Header().Set(
-				"Content-Type",
-				"application/json; charset=utf-8",
-			)
-			w.WriteHeader(http.StatusOK)
-			w.Write(response)
-		} else {
-			w.WriteHeader((http.StatusNotFound))
-		}
+		sendResponse(id, w)
 	}
-	http.HandleFunc("/", defaultHandler)
+	http.HandleFunc("/handlef", defaultHandler)
+}
+
+// Function to serve the HTTP server
+func serve() {
+	handleFuncMethod()
+	
+	http.Handle("/handle", &User{})
 
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
